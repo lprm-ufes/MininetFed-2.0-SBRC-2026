@@ -23,7 +23,7 @@ setup(
         "paho-mqtt",
         "docker",
         "pandas",
-        "scikit-learn"
+        "scikit-learn<1.6"
     ],
     entry_points={
         "console_scripts": [
