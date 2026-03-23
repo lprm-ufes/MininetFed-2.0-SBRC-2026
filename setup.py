@@ -19,11 +19,6 @@ setup(
         "mininetfed.bin",
     ],
     install_requires=[
-        "numpy",
-        "paho-mqtt",
-        "docker",
-        "pandas",
-        "scikit-learn<1.6"
     ],
     entry_points={
         "console_scripts": [
