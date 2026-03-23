@@ -31,7 +31,7 @@ git clone -b refactor --single-branch https://github.com/danielrt/mininetfed.git
 MininetFed requires ContainerNet. Before installing it, install its dependencies using the following command:
 
 ```
-sudo apt install ansible git aptitude
+sudo apt install ansible git aptitude python3-numpy python3-pandas python3-sklearn python3-paho-mqtt python3-docker
 ```
 
 #### Tested ContainerNet Version (Recommended)
