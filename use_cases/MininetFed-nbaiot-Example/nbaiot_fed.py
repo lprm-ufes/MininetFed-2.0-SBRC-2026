@@ -42,7 +42,7 @@ def topology():
     }
 
     client_dimage = build_fed_node_docker_image(
-        "nbaiot_client",
+        "torch_client",
         "client_code/client_requirements.txt",
     )["tag"]
 
