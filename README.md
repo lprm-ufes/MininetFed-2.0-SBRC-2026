@@ -67,7 +67,7 @@ voltado ao monitoramento de saúde em ambientes IoT, combinando
 informações biomédicas e métricas de rede para detecção de anomalias e
 classificação.
 
-Mais informações sobre o dataset podem ser obtidas em: https://www.cse.wustl.edu/\~jain/ehms/index.html
+Mais informações sobre o dataset podem ser obtidas em: https://www.cse.wustl.edu/~jain/ehms/index.html
 
 Neste caso de uso, são criados 4 clientes com divisão do dataset seguindo distribuição iid ou non-iid (α
 = 0.8). Utiliza-se FedAvg para agregação dos pesos do modelo e políticas padrão de aceitação e seleção de clientes, com 
