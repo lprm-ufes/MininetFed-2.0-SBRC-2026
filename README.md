@@ -8,7 +8,7 @@ Aprendizado Federado em Redes"**.
 Para conveniência dos revisores, uma máquina virtual com o sistema
 operacional Ubuntu 22.04 pode ser baixada em:
 
-[Download da VM](link%20vm)
+[Download da VM](https://drive.google.com/file/d/1gQtTdE7hsGXX_15tADN4FrVSuMcuLFBa/view?usp=sharing)
 
 Essa VM já está configurada com a instalação do MininetFed 2.0 e todas
 as suas dependências. Caso esteja utilizando a VM, pule diretamente para
@@ -42,17 +42,17 @@ python3-sklearn python3-paho-mqtt python3-docker
 Instalação do Containernet:
 
 ```
-git clone https://github.com/ramonfontes/containernet.git\
-cd containernet/\
+git clone https://github.com/ramonfontes/containernet.git
+cd containernet/
 sudo util/install.sh -W
 ```
 
 ## MininetFed 2.0
 
 ```
-cd \~\
-git clone https://github.com/lprm-ufes/MininetFed-2.0-SBRC-2026.git\
-cd MininetFed-2.0-SBRC-2026/\
+cd ~
+git clone https://github.com/lprm-ufes/MininetFed-2.0-SBRC-2026.git
+cd MininetFed-2.0-SBRC-2026/
 sudo python setup.py install
 ```
 
@@ -74,7 +74,7 @@ Neste caso de uso, são criados 4 clientes com divisão do dataset seguindo dist
 participação de todos os clientes em cada rodada.
 
 ```
-cd \~/MininetFed-2.0-SBRC-2026/MininetFed-EHMS-Example/\
+cd ~/MininetFed-2.0-SBRC-2026/MininetFed-EHMS-Example/
 sudo python ehms_fed.py
 ```
 Durante a execução serão abertos 6 terminais (1 broker, 1 servidor e 4 
@@ -112,7 +112,7 @@ Antes de iniciar a execução, é presciso baixar e extrair o dataset NbaIOT den
 dataset pode ser obtido em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
 
 ```
-cd \~/MininetFed-2.0-SBRC-2026/MininetFed-nbaiot-Example/
+cd ~/MininetFed-2.0-SBRC-2026/MininetFed-nbaiot-Example/
 ```
 
 Geração dos clientes (executar somente uma vez):
