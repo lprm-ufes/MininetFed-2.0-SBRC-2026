@@ -27,7 +27,7 @@ def topology():
         raise RuntimeError("Nenhuma pasta de cliente encontrada.")
 
     #n_clients = len(device_names)
-    n_clients = 7
+    n_clients = 5
     print(f"[*] {n_clients} clientes encontrados")
 
     server_args = {
