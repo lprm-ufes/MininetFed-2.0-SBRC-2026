@@ -84,8 +84,8 @@ clientes).
 
 Os resultados do experimentos federado serão salvos na pasta server_output:
 
--   **metrics_summary.txt**: métricas finais\
--   **learning_curve.csv**: evolução por rodada\
+-   **metrics_summary.txt**: métricas finais
+-   **learning_curve.csv**: evolução por rodada
 -   **best.model.npz**: melhor modelo
 
 ------------------------------------------------------------------------
@@ -133,6 +133,6 @@ Durante a execução serão abertos 7 terminais.
 
 Resultados em server_output:
 
--   **metrics_summary.txt**: métricas finais\
--   **learning_curve.csv**: evolução por rodada\
+-   **metrics_summary.txt**: métricas finais
+-   **learning_curve.csv**: evolução por rodada
 -   **best.model.npz**: melhor modelo
