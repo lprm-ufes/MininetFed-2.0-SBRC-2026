@@ -1,132 +1,138 @@
-# MininetFed
+# MininetFed 2.0 - SBRC 2026
 
-MininetFed is a federated learning environment emulation tool based on Mininet and Containernet.
+Este repositório contém instruções para instalação e execução dos
+artefatos MininetFed 2.0 e casos de uso para o artigo\
+**"MininetFed 2.0: Uma Ferramenta Programável para Emulação e Análise de
+Aprendizado Federado em Redes"**.
 
-Its main features include:
+Para conveniência dos revisores, uma máquina virtual com o sistema
+operacional Ubuntu 22.04 pode ser baixada em:
 
-- **Addition of new Mininet nodes**: Server, Client. These containerized nodes allow configuration of connection characteristics, available RAM, CPU, etc.
-- **Automatic setup of a communication environment using MQTT**
-- **Facilitates the implementation of new aggregation and client selection functions**
-- **Enables the development of new trainers** to be executed on the clients (model + dataset + manipulations).
-- **Easy to develop**: User just need to define the trainer (client) code and topology of the net.
+[Download da VM](link%20vm)
 
+Essa VM já está configurada com a instalação do MininetFed 2.0 e todas
+as suas dependências. Caso esteja utilizando a VM, pule diretamente para
+a seção [Casos de Uso](#casos-de-uso).
 
-# Mailing List  
-[https://groups.google.com/forum/#!forum/mininetfed-discuss](https://groups.google.com/g/mininetfed-discuss)
+Um video com a demonstração de um dos casos de uso abaixo se encontra em:
 
-# Getting Started with MininetFed
+https://www.youtube.com/watch?v=jPpaY-sV7TQ
 
+------------------------------------------------------------------------
 
-### Cloning the MininetFed Repository:
+# Instalação do MininetFed 2.0 e Dependências
 
-```
-git clone -b refactor --single-branch https://github.com/danielrt/mininetfed.git
+Para a instalação do MininetFed 2.0, é necessário sistema operacional Linux Ubuntu com versão no máximo 24.04.
 
-```
+## Dependências
 
-## Prerequisites
-
-### Installing ContainerNet
-
-MininetFed requires ContainerNet. Before installing it, install its dependencies using the following command:
+Garantir que o pip está atualizado:
 
 ```
-sudo apt install ansible git aptitude python3-numpy python3-pandas python3-sklearn python3-paho-mqtt python3-docker
+sudo python3 -m pip install --upgrade pip
 ```
 
-#### Tested ContainerNet Version (Recommended)
-
-The recommended version for full MininetFed functionality can be found in the following repository:
+Instalação dos pacotes de dependência:
 
 ```
-git clone https://github.com/ramonfontes/containernet.git
-cd containernet
+sudo apt install ansible git aptitude unrar python3-numpy python3-pandas
+python3-sklearn python3-paho-mqtt python3-docker
+```
+
+Instalação do Containernet:
+
+```
+git clone https://github.com/ramonfontes/containernet.git\
+cd containernet/\
 sudo util/install.sh -W
 ```
 
-### Compiling and Installing MininetFed
+## MininetFed 2.0
 
-```bash
-cd ../MininetFed
+```
+cd \~\
+git clone https://github.com/lprm-ufes/MininetFed-2.0-SBRC-2026.git\
+cd MininetFed-2.0-SBRC-2026/\
 sudo python setup.py install
 ```
 
-## Running the First Example
+------------------------------------------------------------------------
 
-A basic example can be executed to test MininetFed's functionality:
+# Casos de Uso
 
-```bash
-pip install sckit-learn pandas
+## Execução do caso de uso 1: Dataset EHMS
 
-cd examples/basic/
+O dataset EHMS (Edge Health Monitoring System) é um conjunto de dados
+voltado ao monitoramento de saúde em ambientes IoT, combinando
+informações biomédicas e métricas de rede para detecção de anomalias e
+classificação.
 
-python3 mnist_gen_clients.py -N 4 --mode iid --py_src_dir ./client_code
+Mais informações sobre o dataset podem ser obtidas em: https://www.cse.wustl.edu/\~jain/ehms/index.html
 
-sudo python basic.py
-```
-The basic example simulates a federated training using the MNIST dataset, with four clients (each one with it's 
-own data and code) and a server. It consists of the following:
-
-- **basic.py**: this script defines the MininetFed topology. It defines the FL parameters, creates a switch, a broker, 
-a server and four clients. Then, it runs the training until a stop condition is achieved.
-- **client_code/mnist_trainer.py**: the trainer (client) code that each MininetFed host will run.
-- **client_requirements.txt**: the package requirements for the trainer. In this example, we use TensorFlow to define 
-and train the model and Scikit-learn to load and prepare the data.
-- **mnist_gen_clients.py**: a helper script created just for this example (**NOT PART OF MININETFED**). 
-It downloads the MNIST dataset, divides it into four new datasets with the same original's distribution. Then 
-it creates a path for each client containing the client code and the corresponding data.
-
-After running the command *mnist_gen_clients.py* four folders are created:
-
-- **clients/client0**: code and dataset for client0.
-- **clients/client1**: code and dataset for client1.
-- **clients/client2**: code and dataset for client2.
-- **clients/client3**: code and dataset for client3.
-
-These folders represents the space each client is allowed to read or save data. In this example, we use the 
-*mnist_gen_clients.py* script to automate the creation of these folders.
-
-After running *basic.py*, the mininetfed topology is created and the federated training starts. You should see 
-a xterm terminal for the server, broker and each client: 
-
-<img src="https://github.com/danielrt/MininetFed/blob/refactor/imgs/basic_example_exe.png" alt="screenshot of basic example training execution" />
-
-The server and broker create their own folder if not specified. Each node will generate logs in it's own folders:
-
-<img src="https://github.com/danielrt/MininetFed/blob/refactor/imgs/basic_example_folders.png" alt="screenshot of experiment folder" />
-
-After execution ends, all windows will close automatically. The results can be checked in the server folder.
-
-# Documentation
-
-https://github.com/lprm-ufes/MininetFed/tree/development/docs
-
-# How to Cite
-
-If you use MininetFed in your research or work, please cite the following paper:
+Neste caso de uso, são criados 4 clientes com divisão do dataset seguindo distribuição iid ou non-iid (α
+= 0.8). Utiliza-se FedAvg para agregação dos pesos do modelo e políticas padrão de aceitação e seleção de clientes, com 
+participação de todos os clientes em cada rodada.
 
 ```
-@inproceedings{sarmento2024mininetfed,  
-  title={MininetFed: A tool for assessing client selection, aggregation, and security in Federated Learning},  
-  author={Sarmento, Eduardo MM and Bastos, Johann JS and Villaca, Rodolfo S and Comarela, Giovanni and Mota, Vin{\'\i}cius FS},  
-  booktitle={2024 IEEE 10th World Forum on Internet of Things (WF-IoT)},  
-  pages={1--6},  
-  year={2024},  
-  organization={IEEE}  
-}  
+cd \~/MininetFed-2.0-SBRC-2026/MininetFed-EHMS-Example/\
+sudo python ehms_fed.py
+```
+Durante a execução serão abertos 6 terminais (1 broker, 1 servidor e 4 
+clientes).
+
+![Execução EHMS](imgs/ehms_exec.png)
+
+Os resultados do experimentos federado serão salvos na pasta server_output:
+
+-   **metrics_summary.txt**: métricas finais\
+-   **learning_curve.csv**: evolução por rodada\
+-   **best.model.npz**: melhor modelo
+
+------------------------------------------------------------------------
+
+## Execução do caso de uso 2: Dataset N-BaIoT
+
+O dataset N-BaIoT é utilizado para detecção de ataques em dispositivos
+IoT infectados por botnets (Mirai e Gafgyt), contendo milhões de
+amostras distribuídas por 9 dispositivos. Mais informações em:
+https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
+
+Para esse dataset não foi utilizado o módulo de geração de clientes e divisão de 
+datasets do MininetFed 2.0 uma vez que o dataset já é naturalmente separado em 9 
+dispositivos, mas foi necessária a criação de um script para montagem dos clientes. Por 
+questões de desempenho, somente 5 dos 9 clientes são usados na VM. 
+
+A política de aceitação de clientes é a padrão (aceitação de todos os clientes) e é usado o 
+algoritmo FedAVG para agregação de pesos do modelo. Entretanto, foi  um servidor 
+personalizado com política de seleção em fila circular, onde apenas 3 clientes treinam 
+por rodada de forma intercalada. Este caso de uso ilustra como o MininetFed 2.0 pode ser 
+usado para criar/testar novas políticas de seleção ou algoritmos de agregação de modelos.
+
+Antes de iniciar a execução, é presciso baixar e extrair o dataset NbaIOT dentro da pasta dataset. O 
+dataset pode ser obtido em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
+
+```
+cd \~/MininetFed-2.0-SBRC-2026/MininetFed-nbaiot-Example/
 ```
 
-# Papers that Used MininetFed
+Geração dos clientes (executar somente uma vez):
+```
+python nbaiot_gen_clients.py --data_root ./dataset --out_dir ./clients
+--py_src_dir ./client_code -N 5 --mode binary --extract_rar
+```
 
-See the complete list of citations [here](docs/en/citations.md).
+Execução:
 
-# Development Team
+```
+sudo python nbaiot_fed.py
+```
 
-[Eduardo Sarmento](https://github.com/eduardo-sarmento)  
-[Johann Jakob Bastos](https://github.com/jjakob10)  
-[João Pedro Batista](https://github.com/joaoBatista04)  
-[Ramon Fontes](https://github.com/ramonfontes)  
-[Rodolfo Villaça](https://github.com/rodolfovillaca)  
-[Vinícius Mota](https://github.com/vfsmota)
-[Daniel Ribeiro Trindade](https://github.com/danielrt)
+Durante a execução serão abertos 7 terminais.
 
+![Execução N-BaIoT](imgs/nbaiot_exec.png)
+
+Resultados em server_output:
+
+-   **metrics_summary.txt**: métricas finais\
+-   **learning_curve.csv**: evolução por rodada\
+-   **best.model.npz**: melhor modelo
