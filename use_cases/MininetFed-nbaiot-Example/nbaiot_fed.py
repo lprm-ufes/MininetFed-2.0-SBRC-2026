@@ -17,7 +17,7 @@ CLIENT_SCRIPT = "nbaiot_trainer.py"
 SERVER_SCRIPT = "nbaiot_server.py"
 
 
-def topology():
+def run_experiment():
     device_names = sorted([
         d for d in os.listdir(CLIENTS_ROOT)
         if os.path.isdir(os.path.join(CLIENTS_ROOT, d))
@@ -27,9 +27,11 @@ def topology():
         raise RuntimeError("Nenhuma pasta de cliente encontrada.")
 
     #n_clients = len(device_names)
+    # somente 5 clientes, por conta de desempenho
     n_clients = 5
     print(f"[*] {n_clients} clientes encontrados")
 
+    # configurações do treinamento
     server_args = {
         ServerOptions.MIN_CLIENTS      : n_clients,
         ServerOptions.NUM_ROUNDS       : 100,
@@ -41,18 +43,26 @@ def topology():
         ServerOptions.MODEL_AGGREGATOR : AggregatorType.FED_AVG,
     }
 
+    # Cria uma imagem com o framework MininetFed 2.0 ja
+    # instalado, alem dos pacotes dos quais o codigo cliente e
+    # dependente
     client_dimage = build_fed_node_docker_image(
         "torch_client",
         "client_code/client_requirements.txt",
     )["tag"]
 
+    # Cria a simulacao usando o modelo baseado no Mininet
     net = MininetFed()
     try:
+        # Adiciona um switch
         s1 = net.addSwitch(name="s1", failMode="standalone")
 
+        # Adiciona o broker de comunicacao entre os clientes
         broker = net.addHost("broker", cls=FedBrokerNode)
         net.addLink(s1, broker)
 
+        # Adiciona um servidor personalizado com código na pasta server/
+        # O output do servidor é escrito nessa pasta
         server = net.addHost(
             name="server",
             cls=FedServerNode,
@@ -61,6 +71,7 @@ def topology():
             server_args=server_args
         )
 
+        # Adiciona o servidor padrão do MininetFed 2.0
         #server = net.addHost(
         #    name="server",
         #    cls=FedServerNode,
@@ -68,9 +79,10 @@ def topology():
         #)
         net.addLink(s1, server)
 
-        # 👇 nomes curtos de host + pasta real do device
+        # Adiciona os clientes federados. A criação das pastas dos
+        # clientes é feita externamente ao MininetFed 2.0
         for i in range(n_clients):
-            host_name = f"c{i}"   # <= nome curto e seguro
+            host_name = f"c{i}"
             client_folder = os.path.join(CLIENTS_ROOT, device_names[i])
 
             print(f"[*] Host {host_name} -> device {device_names[i]}")
@@ -84,15 +96,17 @@ def topology():
             )
             net.addLink(s1, c)
 
+        # dispara a simulacao da rede Mininet
         print("\n*** Starting network...\n")
         net.build()
         net.addNAT(name="nat0", linkTo="s1", ip="192.168.210.254").configDefault()
         s1.start([])
-        net.runFed()
 
+        # roda o experimento de aprendizado federado
+        net.runFed()
     finally:
+        # termina o experimento quando ocorre o criterio
         net.stop()
 
-
 if __name__ == "__main__":
-    topology()
+    run_experiment()

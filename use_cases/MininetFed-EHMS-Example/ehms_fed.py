@@ -5,10 +5,10 @@ from mininetfed.sim.nodes import FedServerNode, FedClientNode, FedBrokerNode
 from mininetfed.sim.util.clients_generator import create_federated_client_datasets
 from mininetfed.sim.util.docker_utils import build_fed_node_docker_image
 
-n_clients = 4
-client_code_path = "client_code/"
+n_clients = 4 # número de clientes
+client_code_path = "client_code/" # pasta com o código cliente
 
-
+# configurações do treinamento
 server_args = {
     ServerOptions.MIN_CLIENTS: n_clients,
     ServerOptions.NUM_ROUNDS: 100,
@@ -59,7 +59,7 @@ def run_experiment():
         broker = net.addHost(name="broker", cls=FedBrokerNode)
         net.addLink(s1, broker)
 
-        # Adiciona o servidor federado
+        # Adiciona o servidor padrão do MininetFed 2.0
         server = net.addHost(
             name="server",
             cls=FedServerNode,
