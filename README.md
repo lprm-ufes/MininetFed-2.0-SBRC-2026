@@ -11,10 +11,20 @@ operacional Ubuntu 22.04 pode ser baixada em:
 [Download da VM](https://drive.google.com/file/d/1gQtTdE7hsGXX_15tADN4FrVSuMcuLFBa/view?usp=sharing)
 
 Essa VM já está configurada com a instalação do MininetFed 2.0 e todas
-as suas dependências. Caso esteja utilizando a VM, pule diretamente para
-a seção [Casos de Uso](#casos-de-uso).
+as suas dependências. Para autenticação na VM use:
 
-Um video com a demonstração de um dos casos de uso abaixo se encontra em:
+**LOGIN**: sbrc
+
+**SENHA**: sbrc
+
+Caso queira utilizar a VM, pule diretamente para a seção [Casos de Uso](#casos-de-uso).
+
+Caso queira realizar uma instalação própria, é **importante notar que uma das 
+dependências do MininetFed 2.0, o ContainerNet, apresenta problemas de 
+compatibilidade com versões do SO Ubuntu maiores que 24.04**. O MininetFed 2.0 
+foi testado com sucesso nas versões 20.04, 22.04 e 24.04 do Ubuntu.
+
+Um video com a demonstração do caso de uso 1 se encontra em:
 
 https://www.youtube.com/watch?v=jPpaY-sV7TQ
 
@@ -74,7 +84,7 @@ Neste caso de uso, são criados 4 clientes com divisão do dataset seguindo dist
 participação de todos os clientes em cada rodada.
 
 ```
-cd ~/MininetFed-2.0-SBRC-2026/MininetFed-EHMS-Example/
+cd ~/MininetFed-2.0-SBRC-2026/use_cases/MininetFed-EHMS-Example/
 sudo python ehms_fed.py
 ```
 Durante a execução serão abertos 6 terminais (1 broker, 1 servidor e 4 
@@ -100,19 +110,23 @@ https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
 Para esse dataset não foi utilizado o módulo de geração de clientes e divisão de 
 datasets do MininetFed 2.0 uma vez que o dataset já é naturalmente separado em 9 
 dispositivos, mas foi necessária a criação de um script para montagem dos clientes. Por 
-questões de desempenho, somente 5 dos 9 clientes são usados na VM. 
+questões de desempenho, somente 5 dos 9 clientes são usados na VM. **Nota importante**: 
+a VM está configurada para um total de 10 Gb de RAM. Essa quantidade de memória é suficiente 
+para carregar os dados referentes a 5 clientes. Caso o revisor precise ajustar para uma 
+quantidade menor de RAM, é necessário que o número de clientes seja menor ao exeutar este 
+caso de uso.
 
 A política de aceitação de clientes é a padrão (aceitação de todos os clientes) e é usado o 
-algoritmo FedAVG para agregação de pesos do modelo. Entretanto, foi  um servidor 
-personalizado com política de seleção em fila circular, onde apenas 3 clientes treinam 
-por rodada de forma intercalada. Este caso de uso ilustra como o MininetFed 2.0 pode ser 
+algoritmo FedAVG para agregação de pesos do modelo. Entretanto, foi implementado um servidor 
+personalizado com política de seleção baseada em fila circular, onde apenas 3 clientes 
+treinam por rodada de forma intercalada. Este caso de uso ilustra como o MininetFed 2.0 pode ser 
 usado para criar/testar novas políticas de seleção ou algoritmos de agregação de modelos.
 
-Antes de iniciar a execução, é presciso baixar e extrair o dataset NbaIOT dentro da pasta dataset. O 
-dataset pode ser obtido em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
+Antes de iniciar a execução, é preciso baixar e extrair o conjunto de dados NbaIOT dentro da pasta 
+dataset/. Ele pode ser obtido em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
 
 ```
-cd ~/MininetFed-2.0-SBRC-2026/MininetFed-nbaiot-Example/
+cd ~/MininetFed-2.0-SBRC-2026/use_cases/MininetFed-nbaiot-Example/
 ```
 
 Geração dos clientes (executar somente uma vez):
