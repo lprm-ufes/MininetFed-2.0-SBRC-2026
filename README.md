@@ -131,8 +131,7 @@ cd ~/MininetFed-2.0-SBRC-2026/use_cases/MininetFed-nbaiot-Example/
 
 Geração dos clientes (executar somente uma vez):
 ```
-python nbaiot_gen_clients.py --data_root ./dataset --out_dir ./clients
---py_src_dir ./client_code -N 5 --mode binary --extract_rar
+python nbaiot_gen_clients.py --data_root ./dataset --out_dir ./clients --py_src_dir ./client_code -N 5 --mode binary --extract_rar
 ```
 
 Execução:
