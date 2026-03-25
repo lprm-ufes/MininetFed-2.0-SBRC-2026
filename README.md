@@ -39,8 +39,7 @@ Para a instalação do MininetFed 2.0, é necessário sistema operacional Linux 
 Instalação dos pacotes de dependência:
 
 ```
-sudo apt install ansible git aptitude unrar python3-numpy python3-pandas
-python3-sklearn python3-paho-mqtt python3-docker python3-pip
+sudo apt install ansible git aptitude unrar python3-numpy python3-pandas python3-sklearn python3-paho-mqtt python3-docker python3-pip
 ```
 
 Garantir que o pip está atualizado:
