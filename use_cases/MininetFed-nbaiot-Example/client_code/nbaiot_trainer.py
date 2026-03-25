@@ -49,7 +49,7 @@ class TabularDataset(Dataset):
 
 
 # ============================
-# MLP (mesmo do script anterior)
+# MLP
 # ============================
 
 class MLP(nn.Module):
@@ -86,7 +86,7 @@ def class_weights_from_y(y: np.ndarray, n_classes: int) -> torch.Tensor:
 
 
 # ============================
-# Cliente Federado (PyTorch)
+# Cliente Federado MininetFed 2.0 (PyTorch)
 # ============================
 
 class TrainerNBAIOT(FedClient):
@@ -114,16 +114,11 @@ class TrainerNBAIOT(FedClient):
         self.n_classes: int | None = None
         self.input_dim: int | None = None
 
-    # -------------------------
-    # 1) Preparar dados locais
-    # -------------------------
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # carregar os dados que serão usados no treinamento local.
+    # Informações sobre o dataset são entregues ao servidor através da
+    # estrutura de dados DatasetInfo
     def prepare_data(self, path_to_data: str) -> DatasetInfo:
-        """
-        path_to_data: diretório onde está o .npz do cliente
-        Espera dentro do .npz:
-          X: float32, shape (N, 9)  -> [ID, DATA_0..DATA_7]
-          y: int64,   shape (N,)
-        """
         npz_files = [f for f in os.listdir(path_to_data) if f.endswith(".npz")]
         if not npz_files:
             raise FileNotFoundError(f"Nenhum arquivo .npz encontrado em {path_to_data}")
@@ -145,7 +140,6 @@ class TrainerNBAIOT(FedClient):
         self.n_classes = int(np.max(y) + 1)
 
         # Split local treino/teste
-        # (mantém padrão do seu trainer; estratifica quando possível)
         strat = y if len(np.unique(y)) > 1 else None
         X_train, X_test, y_train, y_test = train_test_split(
             X, y,
@@ -155,7 +149,7 @@ class TrainerNBAIOT(FedClient):
             shuffle=True,
         )
 
-        # Normalização local (mesmo preprocessing)
+        # Normalização local
         scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train).astype("float32")
         X_test_scaled = scaler.transform(X_test).astype("float32")
@@ -193,15 +187,17 @@ class TrainerNBAIOT(FedClient):
 
         return DatasetInfo(client_id=self.get_client_id(), num_samples=self.X_train.shape[0])
 
-    # -------------------------
-    # 2) Informações do cliente
-    # -------------------------
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # enviar ao servidor informações através da estrutura de dados
+    # ClientInfo, e que podem ser utilizadas como
+    # critérios para a política de aceitação. Aqui nenhuma informação
+    # é enviada.
     def set_client_info(self, client_info: ClientInfo):
         return ClientInfo(self.get_client_id())
 
-    # -------------------------
-    # 3) Treino local
-    # -------------------------
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # realizar o treinamento de uma rodada. returna True caso o
+    # treinamento tenha sido realizado com sucesso e False caso contrário.
     def fit(self) -> bool:
         if self.model is None or self.train_loader is None:
             print(f"[CLIENT {self.get_client_id()}] Model ou train_loader não inicializados.")
@@ -234,9 +230,10 @@ class TrainerNBAIOT(FedClient):
             print(f"Training failed in client {self.get_client_id()}: {e}")
             return False
 
-    # -------------------------
-    # 4) Avaliação local
-    # -------------------------
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # avaliar o modelo, gerando métricas como acurácia e F1-score. As
+    # métricas são enviadas ao servidor para agregação através da
+    # estrutura de dados Metrics.
     def evaluate(self) -> Metrics:
         if self.model is None or self.test_loader is None:
             print(f"[CLIENT {self.get_client_id()}] Model ou test_loader não inicializados.")
@@ -268,9 +265,9 @@ class TrainerNBAIOT(FedClient):
 
         return Metrics(client_id=self.get_client_id(), metrics=metrics)
 
-    # -------------------------
-    # 5) Sincronizar pesos com o servidor
-    # -------------------------
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # atualizar os pesos do modelo local com os pesos do modelo
+    # global recebidos do servidor
     def update_weights(self, global_weights: list[ndarray]):
         """
         Atualiza os pesos do modelo local com os pesos globais vindos do servidor.
@@ -291,6 +288,9 @@ class TrainerNBAIOT(FedClient):
                 w_t = torch.from_numpy(w).to(self.device)
                 param.data.copy_(w_t)
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # para obter os pesos do modelo local e enviá-los para o servidor de
+    # agregação.
     def get_weights(self) -> list[ndarray]:
         """
         Retorna os pesos locais como lista de ndarrays, para o servidor agregar.

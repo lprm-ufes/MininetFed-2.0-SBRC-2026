@@ -122,13 +122,14 @@ treinam por rodada de forma intercalada. Este caso de uso ilustra como o Mininet
 usado para criar/testar novas políticas de seleção ou algoritmos de agregação de modelos.
 
 Antes de iniciar a execução, é preciso baixar e extrair o conjunto de dados NbaIOT dentro da pasta 
-dataset/. Ele pode ser obtido em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
+dataset/. **Esse passo não é necessário na VM**. O conjunto de dados NbaIOT pode ser obtido 
+em: https://archive.ics.uci.edu/dataset/442/detection+of+iot+botnet+attacks+n+baiot
 
 ```
 cd ~/MininetFed-2.0-SBRC-2026/use_cases/MininetFed-nbaiot-Example/
 ```
 
-Geração dos clientes (executar somente uma vez):
+Geração dos clientes (executar somente uma vez). **Esse passo não é necessário na VM**.
 ```
 python nbaiot_gen_clients.py --data_root ./dataset --out_dir ./clients --py_src_dir ./client_code -N 5 --mode binary --extract_rar
 ```

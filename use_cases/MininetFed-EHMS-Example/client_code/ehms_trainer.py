@@ -35,7 +35,6 @@ ID_COL = "instance_id"   # se existir, não entra como feature
 # ============================
 # Dataset tabular para PyTorch
 # ============================
-
 class TabularDataset(Dataset):
     def __init__(self, X, y):
         self.X = torch.tensor(X, dtype=torch.float32)
@@ -51,7 +50,6 @@ class TabularDataset(Dataset):
 # ============================
 # MLP do artigo (EHMS ANN)
 # ============================
-
 class EHMSANN(nn.Module):
     def __init__(self, input_dim: int):
         super().__init__()
@@ -87,9 +85,8 @@ class EHMSANN(nn.Module):
 
 
 # ============================
-# Cliente Federado (PyTorch)
+# Cliente Federado MininetFed 2.0 (PyTorch)
 # ============================
-
 class TrainerEHMS(FedClient):
     def __init__(self):
         super().__init__()
@@ -161,6 +158,10 @@ class TrainerEHMS(FedClient):
 
         return df_model, features
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # carregar os dados que serão usados no treinamento local.
+    # Informações sobre o dataset são entregues ao servidor através da
+    # estrutura de dados DatasetInfo
     def prepare_data(self, path_to_data: str) -> DatasetInfo:
         data_path = os.path.join(path_to_data, DATA_FILE)
 
@@ -250,9 +251,17 @@ class TrainerEHMS(FedClient):
             num_samples=int(self.X_train.shape[0]),
         )
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # enviar ao servidor informações através da estrutura de dados
+    # ClientInfo, e que podem ser utilizadas como
+    # critérios para a política de aceitação. Aqui nenhuma informação
+    # é enviada.
     def set_client_info(self, client_info: ClientInfo):
         return ClientInfo(self.get_client_id())
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # realizar o treinamento de uma rodada. returna True caso o
+    # treinamento tenha sido realizado com sucesso e False caso contrário.
     def fit(self) -> bool:
         if self.model is None or self.train_loader is None:
             print(f"[CLIENT {self.get_client_id()}] Model ou train_loader não inicializados.")
@@ -285,6 +294,10 @@ class TrainerEHMS(FedClient):
             print(f"[CLIENT {self.get_client_id()}] Training failed: {e}")
             return False
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # avaliar o modelo, gerando métricas como acurácia e F1-score. As
+    # métricas são enviadas ao servidor para agregação através da
+    # estrutura de dados Metrics.
     def evaluate(self) -> Metrics:
         if self.model is None or self.test_loader is None:
             print(f"[CLIENT {self.get_client_id()}] Model ou test_loader não inicializados.")
@@ -321,6 +334,9 @@ class TrainerEHMS(FedClient):
             metrics=metrics
         )
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # atualizar os pesos do modelo local com os pesos do modelo
+    # global recebidos do servidor
     def update_weights(self, global_weights: list[ndarray]):
         if self.model is None:
             if self.X_train is not None:
@@ -339,6 +355,9 @@ class TrainerEHMS(FedClient):
                     )
                 param.data.copy_(w_t)
 
+    # Todo cliente MininetFed 2.0 implementa o método abaixo para
+    # para obter os pesos do modelo local e enviá-los para o servidor de
+    # agregação.
     def get_weights(self) -> list[ndarray]:
         if self.model is None:
             raise RuntimeError("Model ainda não inicializado em get_weights().")
