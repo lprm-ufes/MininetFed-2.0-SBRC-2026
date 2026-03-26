@@ -26,7 +26,7 @@ foi testado com sucesso nas versões 20.04, 22.04 e 24.04 do Ubuntu.
 
 Um video com a demonstração do caso de uso 1 se encontra em:
 
-https://www.youtube.com/watch?v=jPpaY-sV7TQ
+https://www.youtube.com/watch?v=sAxkFJddCtU
 
 ------------------------------------------------------------------------
 
