@@ -8,7 +8,7 @@ Aprendizado Federado em Redes"**.
 Para conveniência dos revisores, uma máquina virtual com o sistema
 operacional Ubuntu 22.04 pode ser baixada em:
 
-[Download da VM](https://drive.google.com/file/d/1gQtTdE7hsGXX_15tADN4FrVSuMcuLFBa/view?usp=sharing)
+[Download da VM](https://drive.google.com/file/d/1JBohx_TtFT8aliLqiidYBpuEDZU77K3j/view?usp=sharing)
 
 Essa VM já está configurada com a instalação do MininetFed 2.0 e todas
 as suas dependências. Para autenticação na VM use:
